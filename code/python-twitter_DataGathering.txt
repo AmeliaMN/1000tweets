@@ -1,0 +1,81 @@
+# First, we need to get into python
+# type python at the terminal
+
+python
+
+# then, get the twitter stuff working 
+
+import twitter
+
+# put in credentials
+# Have to fill in yourself! Can't share.
+
+api = twitter.Api(consumer_key='consumer key', consumer_secret='consumer secret', access_token_key='access key', access_token_secret='access token')
+
+
+statuses = api.GetUserTimeline('AmeliaMN', count=200)
+len(statuses)
+dir(statuses[1])
+
+nextid = statuses[len(statuses)-1].id-1
+
+dates = [s.created_at for s in statuses]
+
+
+# You want to do this: https://dev.twitter.com/docs/working-with-timelines and get the next batch repeatedly until there are no more. 
+
+for x in range(1, 5):
+	statuses = api.GetUserTimeline('AmeliaMN', count=200, max_id=nextid)
+	nextid = statuses[len(statuses)-1].id-1
+	dates.extend([s.created_at for s in statuses])
+
+f = open('tweets2.txt', 'w')
+
+for d in range(0, len(dates)):
+	f.write(dates[d])
+	f.write(',')
+
+f.close()
+
+
+# Another part of this is to see how many tweets everyone I follow has tweeted. First, lets get the list of people I follow: 
+
+users = api.GetFriends('AmeliaMN')
+handles = [s.screen_name for s in users]
+tweets = [s.statuses_count for s in users]
+
+f = open('followtweets.txt', 'w')
+f.write('handle')
+f.write(',')
+f.write('tweets')
+f.write('\n')
+
+for d in range(0, len(handles)-1):
+	f.write(handles[d])
+	f.write(',')
+	f.write(str(tweets[d]))
+	f.write('\n')
+
+f.close()
+
+# What about the people who follow me, how many tweets have they tweeted?
+
+
+followers = api.GetFollowers('AmeliaMN')
+handles = [t.screen_name for t in followers]
+tweets = [t.statuses_count for t in followers]
+
+
+f = open('followertweets.txt', 'w')
+f.write('handle')
+f.write(',')
+f.write('tweets')
+f.write('\n')
+
+for d in range(0, len(handles)-1):
+	f.write(handles[d])
+	f.write(',')
+	f.write(str(tweets[d]))
+	f.write('\n')
+
+f.close()
