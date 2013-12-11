@@ -73,6 +73,12 @@ v
 
 ggsave("plots/violinplots.pdf", v, width=12, height=8)
 
+# What about a log scale?
+w <- ggplot(allusers) + geom_histogram(aes(x=tweets))+ facet_grid(.~type)+ scale_x_log10()+ xlab("log(total tweets)") + ylab("Users")+ ggtitle("log(number of tweets) per user followed by or following @AmeliaMN")
+w
+
+ggsave("plots/logscale.pdf", w, width=12, height=8)
+
 
 # Grab Ramnath Vaidya's gist from github: https://gist.github.com/ramnathv/7793167
 #' SparkBar Generator in R
