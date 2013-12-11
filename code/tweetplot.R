@@ -1,4 +1,4 @@
-tweets <- scan(file="tweets2.txt", what="character",sep=",")
+tweets <- scan(file="data/tweets2.txt", what="character",sep=",")
 sampletweets <- tweets[1:10]
 
 library(lubridate)
@@ -32,7 +32,7 @@ ggsave("cumulativetweets.pdf", r)
 
 
 # People I follow
-followtweets <- read.csv("followtweets.txt")
+followtweets <- read.csv("data/followtweets.txt")
 s <- ggplot(followtweets) + geom_histogram(aes(x=tweets)) + xlab("Total tweets") + ylab("Users")
 s <- s + annotate("text", x = 112500, y = 6, label = "@znmeb") + annotate("text", x = 125000, y = 6, label = "@nytimes")
 s + annotate("text", x = 40000, y = 10, label = "@VirginAmerica") + annotate("text", x = 50000, y = 6, label = "@StarTribune")  + annotate("text", x = 65000, y = 6, label = "@TechCrunch")
@@ -44,7 +44,7 @@ ggsave("following.pdf", s, width=12, height=8)
 s
 
 # People who follow me
-followertweets <- read.csv("followertweets.txt")
+followertweets <- read.csv("data/followertweets.txt")
 t <- ggplot(followertweets) + geom_histogram(aes(x=tweets)) + xlab("Total tweets") + ylab("Users")
 t <- t + annotate("text", x = 112500, y = 4, label = "@znmeb") + annotate("text", x = 42500, y = 4, label = "@ibogost")
 t <- t + ggtitle("Number of tweets per user following @AmeliaMN")
@@ -54,3 +54,49 @@ ggsave("followers.pdf", t, width=12, height=8)
 
 ggplot(followertweets) + geom_histogram(aes(x=tweets)) + xlab("total tweets") + ylab("users") + xlim(0, 5000)
 t
+
+
+# Grab Ramnath Vaidya's gist from github: https://gist.github.com/ramnathv/7793167
+#' SparkBar Generator in R
+#' 
+#' Code based on SparkBlocks in Python
+#' https://github.com/1stvamp/py-sparkblocks/blob/master/sparkblocks/__init__.py
+#' 
+#' @example
+#' spark(30, 31, 32, 33)
+#' "▁▃▅▇"
+spark = function(...){
+  numbers = c(...)
+  min_value = min(numbers)
+  max_value = max(numbers)
+  value_scale = max_value - min_value
+  nums = c()
+  for (number in numbers){
+    if ((number - min_value) != 0 && (value_scale != 0)){
+      scaled_value = (number - min_value)/value_scale
+    } else {
+      scaled_value = 0
+    }
+    
+    # Hack because 9604 and 9608 aren't vertically aligned the same as
+    # other block elements
+    num = floor(min(6, scaled_value * 7))
+    if (num == 3){
+      if ((scaled_value * 7) < 3.5){
+        num = 2
+      } else {
+        num = 4
+      }
+    } else if (num == 7){
+      num = 6
+    }
+    nums = c(nums, num)
+  }
+  intToUtf8(9601 + nums)
+}
+
+
+# Now we can make a sparkline!
+res <- hist(followertweets$tweets)
+spark(res$density)
+
