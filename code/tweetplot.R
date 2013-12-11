@@ -66,6 +66,12 @@ u
 
 ggsave("plots/boxplots.pdf", u, width=12, height=8)
 
+# Violin plot
+v <- ggplot(allusers) + geom_violin(aes(type, tweets)) + xlab("") + ylab("Total tweets") 
+v <- v + ggtitle("Number of tweets per user followed by or following @AmeliaMN")
+v
+
+ggsave("plots/violinplots.pdf", v, width=12, height=8)
 
 
 # Grab Ramnath Vaidya's gist from github: https://gist.github.com/ramnathv/7793167
