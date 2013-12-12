@@ -56,8 +56,8 @@ ggplot(followertweets) + geom_histogram(aes(x=tweets)) + xlab("total tweets") + 
 t
 
 # Boxplot
-followertweets$type <- "Follower"
-followtweets$type <- "Following"
+followertweets$type <- "Following @AmeliaMN"
+followtweets$type <- "Followed by @AmeliaMN"
 allusers <- rbind(followertweets, followtweets)
 
 u <- ggplot(allusers) + geom_boxplot(aes(type, tweets)) + xlab("") + ylab("Total tweets") 
@@ -79,6 +79,12 @@ w
 
 ggsave("plots/logscale.pdf", w, width=12, height=8)
 
+# Logged violin?
+
+x <- v + scale_y_log10() + ylab("log(total tweets)") + ggtitle("log(number of tweets) per user followed by or following @AmeliaMN")
+x
+
+ggsave("plots/logviolin.pdf", x, width=12, height=8)
 
 # Grab Ramnath Vaidya's gist from github: https://gist.github.com/ramnathv/7793167
 #' SparkBar Generator in R
